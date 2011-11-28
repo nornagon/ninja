@@ -143,14 +143,28 @@ struct EdgeEnv : public Env {
            i != edge_->inputs_.end() && explicit_deps; ++i, --explicit_deps) {
         if (!result.empty())
           result.push_back(' ');
-        result.append((*i)->file_->path_);
+        const string& path = (*i)->file_->path_;
+        if (path.find(" ") != string::npos) {
+          result.append("\"");
+          result.append(path);
+          result.append("\"");
+        } else {
+          result.append(path);
+        }
       }
     } else if (var == "out") {
       for (vector<Node*>::iterator i = edge_->outputs_.begin();
            i != edge_->outputs_.end(); ++i) {
         if (!result.empty())
           result.push_back(' ');
-        result.append((*i)->file_->path_);
+        const string& path = (*i)->file_->path_;
+        if (path.find(" ") != string::npos) {
+          result.append("\"");
+          result.append(path);
+          result.append("\"");
+        } else {
+          result.append(path);
+        }
       }
     } else if (edge_->env_) {
       return edge_->env_->LookupVariable(var);
